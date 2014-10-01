@@ -17,8 +17,12 @@
 //ID1 ID0 ID3 ID2
 #define RobotID ((((PORTB_IN & PIN5_bm) >> PIN5_bp) << 0)|(((PORTB_IN & PIN3_bm) >> PIN3_bp) << 1)|(((PORTB_IN & PIN6_bm) >> PIN6_bp) << 2)|(((PORTB_IN & PIN4_bm) >> PIN4_bp) << 3))     
 //FPGA DATA
-#define CLK_par_bm PIN0_bm
+#define CLK_par_bm PIN0_bm 
+#define CLK_par_bp PIN0_bp 
+#define CLK_par_PORT PORTA
 #define PARITY_bm PIN1_bm
+#define PARITY_bp PIN1_bp
+#define PARITY_PORT  PORTA 
 #define FPGA_DATA0_bm	PIN0_bm	
 #define FPGA_DATA1_bm	PIN1_bm	
 #define FPGA_DATA2_bm	PIN2_bm	
@@ -27,8 +31,10 @@
 #define FPGA_DATA5_bm	PIN5_bm	
 #define FPGA_DATA6_bm	PIN6_bm	
 #define FPGA_DATA7_bm	PIN7_bm	
+#define FPGA_DATA_PORT  PORTF
 #define MOTORNUM0_bm	PIN0_bm	
 #define MOTORNUM1_bm	PIN1_bm	 
+#define MOTORNUM_PORT   PORTR
 //FPGA SPI
 #define MOSI_CUR1_bm PIN5_bm
 #define MISO_CUR1_bm PIN6_bm
@@ -127,9 +133,10 @@
 void En_RC32M(void);
 void PORT_init(void);
 
-#define TIMERD0_PER 0x7D
-void TimerD0_init(void);//timer 1ms
+//#define TIMERD0_PER 0x7D
+void TimerD0_init(void);//timer 0.063ms
 void TimerC0_init(void);//pwm?!?
+void TimerE1_init(void);
 
 void ADCA_init(void);
 void SPI_Init(void);

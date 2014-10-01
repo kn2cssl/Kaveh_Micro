@@ -45,14 +45,17 @@ void PORT_init(void)
 	
 };
 
-#define TIMERD0_PER 0x7D
+#define TIMERD0_PER 0xE0
 void TimerD0_init(void)
 {
-	tc_write_clock_source(&TCD0,TC_CLKSEL_DIV256_gc);
+	tc_write_clock_source(&TCD0,TC_CLKSEL_DIV4_gc);
 	tc_set_wgm(&TCD0,TC_WG_NORMAL);
 	tc_set_overflow_interrupt_level(&TCD0,TC_INT_LVL_LO);
+	tc_set_cca_interrupt_level(&TCD0,TC_INT_LVL_LO);
 	tc_write_period(&TCD0,TIMERD0_PER);
+	tc_write_cc(&TCC0, TC_CCA, 0x05);
 	tc_set_direction(&TCD0,TC_UP);
+	//tc_enable_cc_channels(&TCD0,TC_CCAEN);
 	tc_enable(&TCD0);
 };
 
@@ -66,17 +69,26 @@ void TimerC0_init(void)
     tc_enable_cc_channels(&TCE0,TC_CCDEN);
     tc_enable(&TCC0);
 };
-
-//void TimerE1_init(void)
-//{
-    //tc_write_clock_source(&TCE1,TC_CLKSEL_DIV256_gc);
-    //tc_set_wgm(&TCE1,TC_WG_SS);
-    //tc_write_period(&TCE1,0x00FF);
-    //tc_set_direction(&TCE1,TC_UP);
-    //tc_enable_cc_channels(&TCE1,TC_CCAEN);
-    //tc_enable(&TCE1);
-//};
-
+#define TIMERE1_PER 0xD7
+void TimerE1_init(void)
+{
+   tc_write_clock_source(&TCE1,TC_CLKSEL_DIV256_gc);
+   tc_set_wgm(&TCE1,TC_WG_NORMAL);
+   tc_set_overflow_interrupt_level(&TCE1,TC_INT_LVL_MED);
+   tc_write_period(&TCE1,TIMERE1_PER);
+   tc_set_direction(&TCE1,TC_UP);
+   tc_enable(&TCE1);
+};
+void TimerE0_init(void)
+{
+	tc_write_clock_source(&TCE0,TC_CLKSEL_DIV256_gc);
+	tc_set_wgm(&TCE0,TC_WG_SS);
+	tc_write_period(&TCE0,0x00FF);
+	tc_set_direction(&TCC0,TC_UP);
+	tc_enable_cc_channels(&TCE0,TC_CCCEN);
+	tc_enable_cc_channels(&TCE0,TC_CCDEN);
+	tc_enable(&TCC0);
+};
 void SPI_Init(void)
 {
 	spi_xmega_set_baud_div(&NRF24L01_L_SPI,8000000UL,F_CPU);
@@ -85,7 +97,7 @@ void SPI_Init(void)
 }
 
 #define USARTE0_conf USARTE0
-#define USARTE0_BUADRATE 19200
+#define USARTE0_BUADRATE 115200
 void USARTE0_init(void)
 {
 	usart_set_mode(&USARTE0_conf,USART_CMODE_ASYNCHRONOUS_gc);

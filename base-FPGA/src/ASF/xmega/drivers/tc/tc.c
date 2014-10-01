@@ -257,12 +257,12 @@ ISR(TCD0_ERR_vect)
  * This function will handle interrupt on Timer Counter D0 Compare/CaptureA and
  * call the callback function.
  */
-ISR(TCD0_CCA_vect)
-{
-	if (tc_tcd0_cca_callback) {
-		tc_tcd0_cca_callback();
-	}
-}
+//ISR(TCD0_CCA_vect)
+//{
+	//if (tc_tcd0_cca_callback) {
+		//tc_tcd0_cca_callback();
+	//}
+//}
 
 /**
  * \internal
@@ -484,12 +484,12 @@ static tc_callback_t tc_tce1_ccb_callback;
  * This function will handle interrupt on Timer Counter E1 overflow and
  * call the callback function.
  */
-ISR(TCE1_OVF_vect)
-{
-	if (tc_tce1_ovf_callback) {
-		tc_tce1_ovf_callback();
-	}
-}
+//ISR(TCE1_OVF_vect)
+//{
+	//if (tc_tce1_ovf_callback) {
+		//tc_tce1_ovf_callback();
+	//}
+//}
 
 /**
  * \internal

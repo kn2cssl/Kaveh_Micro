@@ -41,16 +41,20 @@ union Motor_Speed
 struct Robot_Data
 {
 	uint8_t RID;
-	union Motor_Speed M0;
-	union Motor_Speed M1;
-	union Motor_Speed M2;
-	union Motor_Speed M3;
+	signed int M0a;
+	signed int M0b;
+	signed int M1a;
+	signed int M1b;
+	signed int M2a;
+	signed int M2b;
+	signed int M3a;
+	signed int M3b;
 	uint8_t KCK;
 	uint8_t CHP;
 	uint8_t ASK;
-	uint8_t P;
-	uint8_t I;
-	uint8_t D;
+	unsigned char P;
+	unsigned char I;
+	unsigned char D;
 	
 };
 
@@ -202,7 +206,6 @@ uint8_t Robot_Send_PCK[11],Send_cnt=0;
 						//}						
 					//}
 				//}
-				////LED_Green_R_PORT.OUTTGL = LED_Green_R_PIN_bm;
 			//}
 			//PCK_Num = 0;
 		//}					
