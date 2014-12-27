@@ -69,7 +69,7 @@ void TimerC0_init(void)
     tc_enable_cc_channels(&TCE0,TC_CCDEN);
     tc_enable(&TCC0);
 };
-#define TIMERE1_PER 0xD7
+#define TIMERE1_PER 0x7C // per=0xD7,DIV256 => 1.728ms  // per=0x7c,DIV256 => 1ms
 void TimerE1_init(void)
 {
    tc_write_clock_source(&TCE1,TC_CLKSEL_DIV256_gc);
@@ -108,7 +108,7 @@ void USARTE0_init(void)
 	usart_tx_enable(&USARTE0_conf);
 	//usart_rx_enable(&USARTE0_conf);
 }
-
+  //BATTERY FEEDBACK ----> PORTA3
 #define CONFIG_ADC_INTLVL ADC_CH_INTLVL_LO_gc
 void ADCA_init(void)
 {

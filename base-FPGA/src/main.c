@@ -37,8 +37,11 @@ unsigned char Buf_Rx_L[_Buffer_Size] ;
 char Buf_Tx_L[_Buffer_Size];
 char Address[_Address_Width] = { 0x11, 0x22, 0x33, 0x44, 0x55};
 int motor_num=0,test=0;
+int free_wheel=0;
+int adc =0;
 
 char ctrlflg=0;
+uint64_t flag2sec=0;
 int i=0;
 int parity_calc(signed int data);
 
@@ -89,26 +92,161 @@ int main (void)
 	_delay_us(130);
 	/////////////////////////////////////////////////////////////////////////////////////////////END   NRF Initialize
 	while(1)
-	  {    //motor test
-		  //Robot_D[RobotID].M0a  = 0x01;//low37121
-		  //Robot_D[RobotID].M0b  = 0X91;//high
-		  //Robot_D[RobotID].M1a  = 0XAD;//ghalat17325
-		  //Robot_D[RobotID].M1b  = 0X43;
-		  //Robot_D[RobotID].M2a  = 0X87;//low13703
-		  //Robot_D[RobotID].M2b  = 0X35;//high
-		  //Robot_D[RobotID].M3a  = 0X32;//ghalat30258
-		  //Robot_D[RobotID].M3b  = 0X76;
+	  {  
+		   // BUZZER
+		   //Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
+		    //adc = adc_get_unsigned_result(&ADCA,ADC_CH0);
+		    //if (adc<=1240)//10.3 volt
+		    //{
+			    //Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
+			    //PORTC.OUTSET=PIN2_bm;
+		    //}
+		    //else
+		    //{
+			    //Buzzer_PORT.OUTCLR = Buzzer_PIN_bm;
+			    //PORTC.OUTCLR=PIN2_bm;
+		    //}
+		   // //motor test
+		   //switch(flag2sec)
+			  //{ case 200:
+			   //// M.Setpoint=1000;
+			   //Robot_D[RobotID].M0b  = 0xE8;//low
+			   //Robot_D[RobotID].M0a  = 0X03;//high
+			   //break;
+			   //
+			   //case 400:
+			   ////M.Setpoint=2000;
+			   //Robot_D[RobotID].M0b  = 0xD0;//low
+			   //Robot_D[RobotID].M0a  = 0X07;//high
+			   //break;
+			   //
+			   //case 600:
+			   ////M.Setpoint=500;
+			   //Robot_D[RobotID].M0b  = 0xF4;//low
+			   //Robot_D[RobotID].M0a  = 0X01;//high
+			   //break;
+			   //
+			   //case 800:
+			   ////M.Setpoint=4000;
+			   //Robot_D[RobotID].M0b  = 0xA0;//low
+			   //Robot_D[RobotID].M0a  = 0X0F;//high
+			   //break;
+			   //
+			   //case 1000:
+			   ////M.Setpoint=1000;
+			   //Robot_D[RobotID].M0b  = 0xE8;//low
+			   //Robot_D[RobotID].M0a  = 0X03;//high
+			   //break;
+			   //
+			   //case 1200:
+			   ////M.Setpoint=500;
+			   //Robot_D[RobotID].M0b  = 0xF4;//low
+			   //Robot_D[RobotID].M0a  = 0X01;//high
+			   //break;
+			   //
+			   //case 1400:
+			   ////M.Setpoint=-500;
+			   //Robot_D[RobotID].M0b  = 0x0C;//low
+			   //Robot_D[RobotID].M0a  = 0XFE;//high
+			   //break;
+			   //
+			   //case 1600:
+			   ////M.Setpoint=400;
+			   //Robot_D[RobotID].M0b  = 0x90;//low
+			   //Robot_D[RobotID].M0a  = 0X01;//high
+			   //break;
+			   //
+			   //case 1800:
+			   ////M.Setpoint=350;
+			   //Robot_D[RobotID].M0b  = 0x5E;//low
+			   //Robot_D[RobotID].M0a  = 0X01;//high
+			   //break;
+			   //
+			   //case 2000:
+			   ////M.Setpoint=340;
+			   //Robot_D[RobotID].M0b  = 0x54;//low
+			   //Robot_D[RobotID].M0a  = 0X01;//high
+			   //break;
+			   //
+			   //case 2200:
+			   ////M.Setpoint=330;
+			   //Robot_D[RobotID].M0b  = 0x4A;//low
+			   //Robot_D[RobotID].M0a  = 0X01;//high
+			   //break;
+			   //
+			   //case 2600:
+			   ////M.Setpoint=100;
+			   //Robot_D[RobotID].M0b  = 0x64;//low
+			   //Robot_D[RobotID].M0a  = 0X00;//high
+			   //break;
+			   //
+			   //case 2800:
+			   ////M.Setpoint=50;
+			   //Robot_D[RobotID].M0b  = 0x32;//low
+			   //Robot_D[RobotID].M0a  = 0X00;//high
+			   //break;
+			   //
+			   //case 3000:
+			   ////M.Setpoint=1000;
+			   //Robot_D[RobotID].M0b  = 0xE8;//low
+			   //Robot_D[RobotID].M0a  = 0X03;//high
+			   //break;
+			   //
+			   //case 3200:
+			   ////M.Setpoint=-50;
+			   //Robot_D[RobotID].M0b  = 0xCE;//low
+			   //Robot_D[RobotID].M0a  = 0XFF;//high
+			   //flag2sec=0;
+			   //break;
+	  //
+			   //}
+		 // Robot_D[RobotID].M0b  = 0x00;//0X18;//-1000//01;//low37121
+		 // Robot_D[RobotID].M0a  = 0xFF;//0XFC;//high
+		  //Robot_D[RobotID].M1b  = 0XE8;//2000//ghalat17325
+		  //Robot_D[RobotID].M1a  = 0X03;
+		  //Robot_D[RobotID].M2b  = 0XE8;//1000//low13703
+		  //Robot_D[RobotID].M2a  = 0X03;//high
+		  //Robot_D[RobotID].M3b  = 0xB8;//3000//32;//ghalat30258
+		  //Robot_D[RobotID].M3a  = 0X0B;//76;
 		  
 		  //LED_Red_PORT.OUTTGL = LED_Red_PIN_bm;
+		 // (Robot_D[RobotID].M0a == 1) && (Robot_D[RobotID].M0b == 2) && (Robot_D[RobotID].M1a==3) && (Robot_D[RobotID].M1b == 4) ||
+		//  if ( free_wheel>100)
+		  //{  
+			  //Robot_D[RobotID].M0a = 1;
+			  //Robot_D[RobotID].M0b = 2;
+			  //Robot_D[RobotID].M1a = 3;
+			  //Robot_D[RobotID].M1b = 4;
+		 // }
+		  free_wheel++;
+		  
 		  
 		    asm("wdr");
 		    if (ctrlflg)
 		    {
 			    ctrlflg = 0;
+				Buf_Tx_L[0] = Robot_D[RobotID].M0a;
+				Buf_Tx_L[1] = Robot_D[RobotID].M0b;
+				Buf_Tx_L[2] = Robot_D[RobotID].M1a;
+				Buf_Tx_L[3] = Robot_D[RobotID].M1b;
+				Buf_Tx_L[4] = Robot_D[RobotID].M2a;
+				Buf_Tx_L[5] = Robot_D[RobotID].M2b;
+				Buf_Tx_L[6] = Robot_D[RobotID].M3a;
+				Buf_Tx_L[7] = Robot_D[RobotID].M3b;
 			    NRF24L01_L_Write_TX_Buf(Buf_Tx_L,_Buffer_Size);
 			    NRF24L01_L_RF_TX();
 		    }
 		    _delay_us(1);
+			
+			
+			//char str1[200];
+			//count1 = sprintf(str1,"%d,%d,%d,%d\r",Test_Driver_Data0,Test_Driver_Data1,Test_Driver_Data2,Test_Driver_Data3);
+			//
+			//for (uint8_t i=0;i<count1;i++)
+			//{
+				//usart_putchar(&USARTE0,str1[i]);
+			//}
+			
 	  }
 }
 
@@ -121,7 +259,7 @@ ISR(PORTD_INT0_vect)////////////////////////////////////////PTX   IRQ Interrupt 
 		LED_White_PORT.OUTTGL = LED_White_PIN_bm;
 		//1) read payload through SPI,
 		NRF24L01_L_Read_RX_Buf(Buf_Rx_L, _Buffer_Size);
-		
+		free_wheel=0 ;
 		if(Buf_Rx_L[0] == RobotID)
 		{
 			Robot_D[RobotID].RID  = Buf_Rx_L[0];
@@ -158,16 +296,21 @@ ISR(PORTD_INT0_vect)////////////////////////////////////////PTX   IRQ Interrupt 
 	}
 }
 
-char timectrl;
-ISR(TCE1_OVF_vect)
+char timectrl,time2sec;
+ISR(TCE1_OVF_vect)//1ms
 {
 	timectrl++;
-	if (timectrl>=20) //1.26ms
+	if (timectrl>=32) 
 	{
 		ctrlflg=1;
 		timectrl=0;
 	}
-	
+	time2sec++;
+	if (time2sec>=10)
+	{
+		flag2sec++;
+		time2sec=0;
+	}
 }
 
 ISR(TCD0_OVF_vect)
@@ -185,7 +328,7 @@ ISR(TCD0_CCA_vect)
 			MOTORNUM_PORT.OUTCLR= (MOTORNUM0_bm | MOTORNUM1_bm);
 			if((CLK_par_PORT.IN && CLK_par_bm)==1)
 			{
-			FPGA_DATA_PORT.OUT = Robot_D[RobotID].M0a;
+			FPGA_DATA_PORT.OUT = Robot_D[RobotID].M0b;
 			PARITY_PORT.OUTCLR = PARITY_bm;
 			motor_num++;
 			//PARITY_PORT.OUTSET =(parity_calc(Robot_D[RobotID].M0a)<<PARITY_bp);
@@ -200,7 +343,7 @@ ISR(TCD0_CCA_vect)
 			MOTORNUM_PORT.OUTCLR= (MOTORNUM0_bm | MOTORNUM1_bm);
 			if((CLK_par_PORT.IN && CLK_par_bm)==1)
 			{
-			FPGA_DATA_PORT.OUT = Robot_D[RobotID].M0b;
+			FPGA_DATA_PORT.OUT = Robot_D[RobotID].M0a;
 			PARITY_PORT.OUTSET = PARITY_bm;
 			motor_num++;
 			//PARITY_PORT.OUTSET = (parity_calc(Robot_D[RobotID].M1a)<<PARITY_bp);
@@ -216,7 +359,7 @@ ISR(TCD0_CCA_vect)
 			if((CLK_par_PORT.IN && CLK_par_bm)==1)
 			{
 			
-			FPGA_DATA_PORT.OUT = Robot_D[RobotID].M1a;
+			FPGA_DATA_PORT.OUT = Robot_D[RobotID].M1b;
 			PARITY_PORT.OUTCLR = PARITY_bm;
 			motor_num++;
 			//PARITY_PORT.OUTSET = (parity_calc(Robot_D[RobotID].M2a)<<PARITY_bp);
@@ -232,7 +375,7 @@ ISR(TCD0_CCA_vect)
 			if((CLK_par_PORT.IN && CLK_par_bm)==1)
 			{
 			//LED_Red_PORT.OUTTGL = LED_Red_PIN_bm;
-			FPGA_DATA_PORT.OUT = Robot_D[RobotID].M1b;
+			FPGA_DATA_PORT.OUT = Robot_D[RobotID].M1a;
 			PARITY_PORT.OUTSET = PARITY_bm;
 			motor_num++;
 			//PARITY_PORT.OUTSET = (parity_calc(Robot_D[RobotID].M3a)<<PARITY_bp);
@@ -247,7 +390,7 @@ ISR(TCD0_CCA_vect)
 			MOTORNUM_PORT.OUT= MOTORNUM1_bm;
 			if((CLK_par_PORT.IN && CLK_par_bm)==1)
 			{
-				FPGA_DATA_PORT.OUT = Robot_D[RobotID].M2a;
+				FPGA_DATA_PORT.OUT = Robot_D[RobotID].M2b;
 				PARITY_PORT.OUTCLR = PARITY_bm;
 				motor_num++;
 				//PARITY_PORT.OUTSET =(parity_calc(Robot_D[RobotID].M0a)<<PARITY_bp);
@@ -262,7 +405,7 @@ ISR(TCD0_CCA_vect)
 			MOTORNUM_PORT.OUT= MOTORNUM1_bm;
 			if((CLK_par_PORT.IN && CLK_par_bm)==1)
 			{
-				FPGA_DATA_PORT.OUT = Robot_D[RobotID].M2b;
+				FPGA_DATA_PORT.OUT = Robot_D[RobotID].M2a;
 				PARITY_PORT.OUTSET = PARITY_bm;
 				motor_num++;
 				//PARITY_PORT.OUTSET = (parity_calc(Robot_D[RobotID].M1a)<<PARITY_bp);
@@ -277,7 +420,7 @@ ISR(TCD0_CCA_vect)
 			MOTORNUM_PORT.OUT= (MOTORNUM0_bm | MOTORNUM1_bm);
 			if((CLK_par_PORT.IN && CLK_par_bm)==1)
 			{
-				FPGA_DATA_PORT.OUT = Robot_D[RobotID].M3a;
+				FPGA_DATA_PORT.OUT = Robot_D[RobotID].M3b;
 				PARITY_PORT.OUTCLR = PARITY_bm;
 				motor_num++;
 				//PARITY_PORT.OUTSET = (parity_calc(Robot_D[RobotID].M2a)<<PARITY_bp);
@@ -293,7 +436,7 @@ ISR(TCD0_CCA_vect)
 			if((CLK_par_PORT.IN && CLK_par_bm)==1)
 			{
 				//LED_White_PORT.OUTTGL = LED_White_PIN_bm;
-				FPGA_DATA_PORT.OUT = Robot_D[RobotID].M3b;
+				FPGA_DATA_PORT.OUT = Robot_D[RobotID].M3a;
 				PARITY_PORT.OUTSET = PARITY_bm;
 				motor_num++;
 				//PARITY_PORT.OUTSET = (parity_calc(Robot_D[RobotID].M3a)<<PARITY_bp);
