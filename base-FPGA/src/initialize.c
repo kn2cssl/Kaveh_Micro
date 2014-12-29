@@ -38,7 +38,7 @@ void PORT_init(void)
 	PORTD_INT0MASK = PIN2_bm;
 	
 	PORTE_DIRSET = SCK_CUR1_bm | MOSI_CUR1_bm | Buzzer_PIN_bm | PIN3_bm | LED_Green_PIN_bm | LED_White_PIN_bm | LED_Red_PIN_bm;
-	PORTE.OUTSET = PIN3_bm;
+	//PORTE.OUTSET = PIN3_bm;//TX pin on PORTE
 	
 	PORTF_DIRSET = FPGA_DATA0_bm | FPGA_DATA1_bm | FPGA_DATA2_bm | FPGA_DATA3_bm | FPGA_DATA4_bm | FPGA_DATA5_bm | FPGA_DATA6_bm | FPGA_DATA7_bm; 
 	PORTR_DIRSET = MOTORNUM0_bm | MOTORNUM1_bm;
@@ -97,7 +97,7 @@ void SPI_Init(void)
 }
 
 #define USARTE0_conf USARTE0
-#define USARTE0_BUADRATE 115200
+#define USARTE0_BUADRATE 9600
 void USARTE0_init(void)
 {
 	usart_set_mode(&USARTE0_conf,USART_CMODE_ASYNCHRONOUS_gc);
@@ -127,7 +127,7 @@ void ADCA_init(void)
     adc_get_calibration_data(ADC_CAL_ADCA);
     adc_set_conversion_parameters(&adca_conf,ADC_SIGN_OFF,ADC_RES_12,ADC_REF_AREFA);
     adc_set_clock_rate(&adca_conf,125000UL);
-    adc_set_conversion_trigger(&adca_conf,ADC_TRIG_FREERUN_SWEEP,1,0);
+    adc_set_conversion_trigger(&adca_conf,ADC_TRIG_FREERUN_SWEEP,1,0);//IN BARAYE CHIE??!
    // adc_set_config_compare_value(adcb_conf,KCK_MAX_CHARGE_AMP);
     adc_write_configuration(&ADCA,&adca_conf);
     //

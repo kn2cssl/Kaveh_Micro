@@ -94,18 +94,16 @@ int main (void)
 	while(1)
 	  {  
 		   // BUZZER
-		   //Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
-		    //adc = adc_get_unsigned_result(&ADCA,ADC_CH0);
-		    //if (adc<=1240)//10.3 volt
-		    //{
-			    //Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
-			    //PORTC.OUTSET=PIN2_bm;
-		    //}
-		    //else
-		    //{
-			    //Buzzer_PORT.OUTCLR = Buzzer_PIN_bm;
-			    //PORTC.OUTCLR=PIN2_bm;
-		    //}
+		    adc = adc_get_unsigned_result(&ADCA,ADC_CH0);
+		   //adc = 1200;
+		    if (adc<=2250)//10 volt
+		    {
+			    Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
+		    }
+		    else
+		    {
+			    Buzzer_PORT.OUTCLR = Buzzer_PIN_bm;
+		    }
 		   // //motor test
 		   //switch(flag2sec)
 			  //{ case 200:
@@ -225,6 +223,7 @@ int main (void)
 		    if (ctrlflg)
 		    {
 			    ctrlflg = 0;
+				
 				Buf_Tx_L[0] = Robot_D[RobotID].M0a;
 				Buf_Tx_L[1] = Robot_D[RobotID].M0b;
 				Buf_Tx_L[2] = Robot_D[RobotID].M1a;
@@ -238,14 +237,16 @@ int main (void)
 		    }
 		    _delay_us(1);
 			
+			//SEND TEST DATA TO FT232
+			char str1[20];
+		    uint8_t count1 = sprintf(str1,"%d\r",adc);
 			
-			//char str1[200];
-			//count1 = sprintf(str1,"%d,%d,%d,%d\r",Test_Driver_Data0,Test_Driver_Data1,Test_Driver_Data2,Test_Driver_Data3);
-			//
-			//for (uint8_t i=0;i<count1;i++)
-			//{
-				//usart_putchar(&USARTE0,str1[i]);
-			//}
+			for (uint8_t i=0;i<count1;i++)
+			{
+				usart_putchar(&USARTE0,str1[i]);
+				
+			}
+			//usart_putchar(&USARTE0,'a');
 			
 	  }
 }
@@ -312,6 +313,11 @@ ISR(TCE1_OVF_vect)//1ms
 		time2sec=0;
 	}
 }
+//
+//ISR(USARTE0_RXC_vect)       
+//{
+	//
+//}
 
 ISR(TCD0_OVF_vect)
 {
