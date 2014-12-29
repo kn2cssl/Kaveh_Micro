@@ -103,6 +103,7 @@ int main (void)
 		    else
 		    {
 			    Buzzer_PORT.OUTCLR = Buzzer_PIN_bm;
+				//test
 		    }
 		   // //motor test
 		   //switch(flag2sec)
@@ -237,15 +238,15 @@ int main (void)
 		    }
 		    _delay_us(1);
 			
-			//SEND TEST DATA TO FT232
-			char str1[20];
-		    uint8_t count1 = sprintf(str1,"%d\r",adc);
-			
-			for (uint8_t i=0;i<count1;i++)
-			{
-				usart_putchar(&USARTE0,str1[i]);
-				
-			}
+			////SEND TEST DATA TO FT232
+			//char str1[20];
+		    //uint8_t count1 = sprintf(str1,"%d\r",adc);
+			//
+			//for (uint8_t i=0;i<count1;i++)
+			//{
+				//usart_putchar(&USARTE0,str1[i]);
+				//
+			//}
 			//usart_putchar(&USARTE0,'a');
 			
 	  }
