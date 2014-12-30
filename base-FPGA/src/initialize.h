@@ -52,6 +52,14 @@
 #define KCK_DSH_SW_PIN_bm	PIN2_bm
 #define KCK_DSH_SW_PIN_bp	PIN2_bp
 #define KCK_DSH_SW (((KCK_DSH_SW_PORT.IN & KCK_DSH_SW_PIN_bm) >> KCK_DSH_SW_PIN_bp)?0xFF:0x00)
+
+#define KCK_Ch_Limit_PORT PORTB
+#define KCK_Ch_Limit_PIN_bm		PIN7_bm
+#define KCK_Ch_Limit_PIN_bp		PIN7_bp
+
+#define KCK_DCh_Limit_PORT PORTC
+#define KCK_DCh_Limit_PIN_bm		PIN4_bm
+#define KCK_DCh_Limit_PIN_bp		PIN4_bp
 //ST_SHG
 #define KCK_Charge_PORT PORTC
 #define KCK_Charge_PIN_bm		PIN4_bm
@@ -68,8 +76,10 @@
 #define KCK_Speed_CHIP(_A_) TCC0_CCC=_A_; // PORTC_OUT =(PORTC_OUT & (~KCK_DIR_PIN_bm)) | (_A_<<KCK_DIR_PIN_bp) // _delay_ms(100); TCC0_CCA=0; //KCK_Charge( KCK_CHARGE_ON) KCK_Charge( KCK_CHARGE_OFF) //PORTC_OUT =TCC0_CNT=_A_; ;
 #define KCK_Speed_DIR(_A_) TCC0_CCD=_A_;
 
-#define KCK_Chip_PIN_bm		PIN2_bm
-#define KCK_Chip_PIN_bp		PIN2_bp
+//#define KCK_Chip_PIN_bm		PIN2_bm //socket shoot 4pin --> chip nadare
+//#define KCK_Chip_PIN_bp		PIN2_bp
+#define KCK_SH_PIN_bm		PIN2_bm
+#define KCK_SH_PIN_bp		PIN2_bp
 #define KCK_DIR_PIN_bm		PIN3_bm
 #define KCK_DIR_PIN_bp		PIN3_bp
 //Vback

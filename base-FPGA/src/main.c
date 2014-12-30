@@ -37,10 +37,12 @@ unsigned char Buf_Rx_L[_Buffer_Size] ;
 char Buf_Tx_L[_Buffer_Size];
 char Address[_Address_Width] = { 0x11, 0x22, 0x33, 0x44, 0x55};
 int motor_num=0,test=0;
+uint32_t kck_time=0;
 int free_wheel=0;
 int adc =0;
+int flg=0;
 
-char ctrlflg=0;
+char ctrlflg=0,full_charge=0;;
 uint64_t flag2sec=0;
 int i=0;
 int parity_calc(signed int data);
@@ -103,8 +105,37 @@ int main (void)
 		    else
 		    {
 			    Buzzer_PORT.OUTCLR = Buzzer_PIN_bm;
-				//test
 		    }
+			//shoot
+			tc_enable_cc_channels(&TCC0,TC_CCCEN);
+			//PORTC_OUTCLR=KCK_SH_PIN_bm;
+			//if((KCK_Ch_Limit_PORT.IN & KCK_Ch_Limit_PIN_bm)>>KCK_Ch_Limit_PIN_bp)
+			//{
+				//full_charge=1;
+				////tc_disable_cc_channels(&TCC0,TC_CCCEN);
+				//LED_White_PORT.OUTTGL = LED_White_PIN_bm;
+			//}
+			//else
+			//{
+				//if(flg==0)
+				//{
+					//tc_enable_cc_channels(&TCC0,TC_CCCEN);
+				//}
+			//}
+			//if (full_charge)
+			//{
+				//if (Robot_D[RobotID].KCK )
+				//{
+					//flg = 1;
+					////LED_Red_PORT.OUTTGL = LED_Red_PIN_bm;
+				//}
+			//}
+			//if (KCK_DSH_SW)
+			//{
+				//flg = 1;
+				////LED_Red_PORT.OUTTGL = LED_Red_PIN_bm;
+			//}
+			
 		   // //motor test
 		   //switch(flag2sec)
 			  //{ case 200:
@@ -307,12 +338,43 @@ ISR(TCE1_OVF_vect)//1ms
 		ctrlflg=1;
 		timectrl=0;
 	}
-	time2sec++;
-	if (time2sec>=10)
-	{
-		flag2sec++;
-		time2sec=0;
-	}
+	//time2sec++;
+	//if (time2sec>=10)
+	//{
+		//flag2sec++;
+		//time2sec=0;
+	//}
+	//if(flg)
+	//{
+		//if(kck_time<2000)
+		//{
+			//kck_time++;
+			////tc_disable_cc_channels(&TCC0,TC_CCCEN);
+			//if(((KCK_DCh_Limit_PORT.IN & KCK_DCh_Limit_PIN_bm)>>KCK_DCh_Limit_PIN_bp))
+			//tc_disable_cc_channels(&TCC0,TC_CCDEN);
+			//else
+			//{
+				//if(KCK_DSH_SW)
+				//{
+					//tc_enable_cc_channels(&TCC0,TC_CCDEN);
+					//KCK_Speed_DIR(KCK_SPEED_HI);
+					//full_charge=0;
+				//}
+				//else if(full_charge==1)
+				//{
+					//tc_enable_cc_channels(&TCC0,TC_CCDEN);
+					//KCK_Speed_DIR(Robot_D[RobotID].KCK);
+					//full_charge=0;
+					//// LED_Green_PORT.OUTTGL = LED_Green_PIN_bm;
+				//}
+			//}
+		//}
+		//
+		//else {
+			//KCK_Speed_DIR(KCK_SPEED_OFF);
+			//tc_enable_cc_channels(&TCC0,TC_CCCEN);
+		//kck_time=0; flg=0;}
+	//}
 }
 //
 //ISR(USARTE0_RXC_vect)       
