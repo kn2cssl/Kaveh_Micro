@@ -139,6 +139,7 @@ void TimerC0_init(void);//pwm?!?
 void TimerE1_init(void);
 
 void ADCA_init(void);
+void ADCB_init(void);
 void SPI_Init(void);
 void USARTE0_init(void);
 
