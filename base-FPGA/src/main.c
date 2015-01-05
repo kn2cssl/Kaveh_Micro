@@ -40,6 +40,7 @@ int motor_num=0,test=0;
 int free_wheel=0;
 int adc =0;
 int adc_M0 =0;
+int adc_M1 =0;
 
 char ctrlflg=0;
 uint64_t flag2sec=0;
@@ -58,7 +59,7 @@ int main (void)
 	TimerC0_init();
 	TimerE1_init();
 	USARTE0_init();
-	ADCA_init();
+	//ADCA_init();
 	//ADCB_init();
 	//wdt_enable();
 
@@ -96,10 +97,12 @@ int main (void)
 	while(1)
 	  {  
 		   // BUZZER
-		    adc = adc_get_unsigned_result(&ADCA,ADC_CH0);
+		    //adc = adc_get_unsigned_result(&ADCA,ADC_CH0);
 		   //CURRENT_M0
-		    //adc_M0 = adc_get_unsigned_result(&ADCB,ADC_CH0);
-		   //adc = 1200;
+		    //adc_M0 = adc_get_unsigned_result(&ADCB,ADC_CH1);
+		   //CURRENT_M1
+			//adc_M1 = adc_get_unsigned_result(&ADCB,ADC_CH0);
+		  
 		    //if (adc<=2250)//10 volt
 		    //{
 			    //Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
@@ -111,15 +114,15 @@ int main (void)
 			//
 			
 			//SEND TEST DATA TO FT232
-			char str1[20];
-			uint8_t count1 = sprintf(str1,"%d\r",adc);
+			char str1[100];
+			uint8_t count1 = sprintf(str1,"%d,%d,%d\r",adc,adc_M0,adc_M1);
 			
 			for (uint8_t i=0;i<count1;i++)
 			{
 				usart_putchar(&USARTE0,str1[i]);
 				
 			}
-			usart_putchar(&USARTE0,'a');
+		
 		   // //motor test
 		   //switch(flag2sec)
 			  //{ case 200:
