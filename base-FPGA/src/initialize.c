@@ -26,8 +26,8 @@ void En_RC32M(void)
 void PORT_init(void)
 {   
 	PORTA_DIRSET = CLK_par_bm | PARITY_bm; 
-	
-	PORTC_DIRSET =  KCK_DIR_PIN_bm | KCK_Charge_PIN_bm | MOSI_CUR2_bm | SCK_CUR2_bm | Gyro_SCL_PIN_bm;//KCK_Chip_PIN_bm |
+	//PORTB.7 SOOKHTE!
+	PORTC_DIRSET =  KCK_DIR_PIN_bm | KCK_SH_PIN_bm | MOSI_CUR2_bm | SCK_CUR2_bm | Gyro_SCL_PIN_bm ;//KCK_Chip_PIN_bm |
 			//PORTC_PIN0CTRL |= PORT_ISC_LEVEL_gc;  //vase chie??
 			//PORTC_INTCTRL |= PORT_INT0LVL_LO_gc;
 			//PORTC_INT0MASK |= PIN0_bm;
@@ -68,7 +68,7 @@ void TimerC0_init(void)
     tc_enable_cc_channels(&TCC0,TC_CCCEN);
     tc_enable_cc_channels(&TCC0,TC_CCDEN);
     tc_enable(&TCC0);
-    tc_write_cc(&TCC0,TC_CCC,0x5D);
+    tc_write_cc(&TCC0,TC_CCD,0x5D);
 };
 #define TIMERE1_PER 0x7C // per=0xD7,DIV256 => 1.728ms  // per=0x7c,DIV256 => 1ms
 void TimerE1_init(void)
