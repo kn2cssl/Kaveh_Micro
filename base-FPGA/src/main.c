@@ -33,6 +33,7 @@
 #include "transmitter.h" //warning mide az sendnewdata va senddata
 #include <stdlib.h>
 
+
 unsigned char Buf_Rx_L[_Buffer_Size] ;
 char Buf_Tx_L[_Buffer_Size];
 char Address[_Address_Width] = { 0x11, 0x22, 0x33, 0x44, 0x55};
@@ -61,6 +62,7 @@ int main (void)
 	USARTE0_init();
 	ADCA_init();
 	//wdt_enable();
+	
 
 	// Globally enable interrupts
 	sei();
@@ -95,10 +97,6 @@ int main (void)
 	/////////////////////////////////////////////////////////////////////////////////////////////END   NRF Initialize
 	while(1)
 	  {  
-		  //if(((KCK_DCh_Limit_PORT.IN & KCK_DCh_Limit_PIN_bm)>>KCK_DCh_Limit_PIN_bp))
-		  //{
-			  //LED_Green_PORT.OUTTGL = LED_Green_PIN_bm;
-		  //}
 		   // BUZZER
 		    adc = adc_get_unsigned_result(&ADCA,ADC_CH0);
 		   //adc = 1200;
@@ -137,7 +135,6 @@ int main (void)
 			if (KCK_DSH_SW)//bazi vaghta begir nagir dare
 			{
 				flg = 1;
-				//LED_Red_PORT.OUTTGL = LED_Red_PIN_bm;
 			}
 			
 		   // //motor test
@@ -243,17 +240,11 @@ int main (void)
 		  //Robot_D[RobotID].M3b  = 0xB8;//3000//32;//ghalat30258
 		  //Robot_D[RobotID].M3a  = 0X0B;//76;
 		  
-		  //LED_Red_PORT.OUTTGL = LED_Red_PIN_bm;
-		 // (Robot_D[RobotID].M0a == 1) && (Robot_D[RobotID].M0b == 2) && (Robot_D[RobotID].M1a==3) && (Robot_D[RobotID].M1b == 4) ||
-		//  if ( free_wheel>100)
-		  //{  
-			  //Robot_D[RobotID].M0a = 1;
-			  //Robot_D[RobotID].M0b = 2;
-			  //Robot_D[RobotID].M1a = 3;
-			  //Robot_D[RobotID].M1b = 4;
-		 // }
-		  free_wheel++;
 		  
+		  //if (free_wheel > 2000)//2000ms=2s reseting nrf
+		  //{
+			  //NRF_init();
+		  //}
 		  
 		    asm("wdr");
 		    if (ctrlflg)
@@ -336,8 +327,9 @@ ISR(PORTD_INT0_vect)////////////////////////////////////////PTX   IRQ Interrupt 
 char timectrl,time2sec;
 ISR(TCE1_OVF_vect)//1ms
 {
+	free_wheel++;// for making wheels free when there is no wireless data
 	timectrl++;
-	if (timectrl>=32) 
+	if (timectrl>=10) //32
 	{
 		ctrlflg=1;
 		timectrl=0;
@@ -397,7 +389,14 @@ ISR(TCD0_OVF_vect)
 
 
 ISR(TCD0_CCA_vect)
-{   
+{  
+	 if ( free_wheel>100)
+	{
+		Robot_D[RobotID].M0a = 1;
+		Robot_D[RobotID].M0b = 2;
+		Robot_D[RobotID].M1a = 3;
+		Robot_D[RobotID].M1b = 4;
+	}
 	switch (motor_num)
 	{
 		case 0 :
@@ -606,4 +605,51 @@ int parity_calc(signed int data)
 	parity = (data & PIN0_bm) ^ ((data & PIN1_bm)>>PIN1_bp) ^ ((data & PIN2_bm)>>PIN2_bp) ^ ((data & PIN3_bm)>>PIN3_bp)
 	 ^ ((data & PIN4_bm)>>PIN4_bp) ^ ((data & PIN5_bm)>>PIN5_bp) ^ ((data & PIN6_bm)>>PIN6_bp) ^ ((data & PIN7_bm)>>PIN7_bp);
     return parity;
+}
+
+void NRF_init (void)
+{
+	NRF24L01_L_CE_LOW;       //disable transceiver modes
+
+	SPI_Init();
+
+	_delay_us(10);
+	_delay_ms(11);      //power on reset delay needs 10.3ms//amin changed 100ms to 11ms
+	NRF24L01_L_Clear_Interrupts();
+	NRF24L01_L_Flush_TX();
+	NRF24L01_L_Flush_RX();
+	NRF24L01_L_CE_LOW;
+	if (RobotID < 3)
+	NRF24L01_L_Init_milad(_TX_MODE, _CH_0, _2Mbps, Address, _Address_Width, _Buffer_Size, RF_PWR_MAX);
+	else if(RobotID > 2 && RobotID < 6)
+	NRF24L01_L_Init_milad(_TX_MODE, _CH_1, _2Mbps, Address, _Address_Width, _Buffer_Size, RF_PWR_MAX);
+	else if (RobotID > 5 && RobotID < 9)
+	NRF24L01_L_Init_milad(_TX_MODE, _CH_2, _2Mbps, Address, _Address_Width, _Buffer_Size, RF_PWR_MAX);
+	else
+	NRF24L01_L_Init_milad(_TX_MODE, _CH_3, _2Mbps, Address, _Address_Width, _Buffer_Size, RF_PWR_MAX);
+	NRF24L01_L_WriteReg(W_REGISTER | DYNPD,0x01);
+	NRF24L01_L_WriteReg(W_REGISTER | FEATURE,0x06);
+
+	NRF24L01_L_CE_HIGH;
+	_delay_us(130);
+}
+
+void data_transmission (void)
+{
+	//transmitting data to wireless board/////////////////////////////////////////////////
+	
+	Buf_Tx_L[0] = Robot_D[RobotID].M0a;
+	Buf_Tx_L[1] = Robot_D[RobotID].M0b;
+	Buf_Tx_L[2] = Robot_D[RobotID].M1a;
+	Buf_Tx_L[3] = Robot_D[RobotID].M1b;
+	Buf_Tx_L[4] = Robot_D[RobotID].M2a;
+	Buf_Tx_L[5] = Robot_D[RobotID].M2b;
+	Buf_Tx_L[6] = Robot_D[RobotID].M3a;
+	Buf_Tx_L[7] = Robot_D[RobotID].M3b;	
+	
+	Buf_Tx_L[16] = adc/12;						//battery voltage
+	
+
+	NRF24L01_L_Write_TX_Buf(Buf_Tx_L, _Buffer_Size);
+	NRF24L01_L_RF_TX();
 }
