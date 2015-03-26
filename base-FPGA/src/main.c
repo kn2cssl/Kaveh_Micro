@@ -111,7 +111,7 @@ int main (void)
 				{
 					if( KCK_Sens || (Robot_D[RobotID].KCK%2))
 					{
-					flg = 1;
+						flg = 1;
 					}
 				}
 			}
@@ -123,7 +123,10 @@ int main (void)
 			{
 				NRF_init();
 			}
-			
+			if(KCK_Sens)
+			LED_Green_PORT.OUTSET = LED_Green_PIN_bm;
+			else
+			LED_Green_PORT.OUTCLR = LED_Green_PIN_bm;
 		   // //motor test
 		   //switch(flag2sec)
 			  //{ case 200:
