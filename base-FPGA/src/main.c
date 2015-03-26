@@ -45,7 +45,7 @@ int free_wheel=0;
 int wireless_reset=0;
 int Robot_Select,Robot_Select_Last;
 int Test_Data[8];
-int adc =0;
+float adc =0;
 int flg=0;
 
 char ctrlflg=0,full_charge=0;;
@@ -80,8 +80,8 @@ int main (void)
 	  {  
 		    asm("wdr");
 		   // BUZZER
-		    adc = adc_get_unsigned_result(&ADCA,ADC_CH0);
-		   //adc = 1200;
+		    adc = adc +(adc_get_unsigned_result(&ADCA,ADC_CH0)-adc)*0.01;
+		   
 		    if (adc<=2250)//10 volt
 		    {
 			    Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
@@ -109,7 +109,10 @@ int main (void)
 			{
 				if (Robot_D[RobotID].KCK )
 				{
+					if( KCK_Sens || (Robot_D[RobotID].KCK%2))
+					{
 					flg = 1;
+					}
 				}
 			}
 			if (KCK_DSH_SW)//bazi vaghta begir nagir dare
@@ -215,14 +218,14 @@ int main (void)
 			   //break;
 	  //
 			   //}
-		 // Robot_D[RobotID].M0b  = 0x00;//0X18;//-1000//01;//low37121
-		 // Robot_D[RobotID].M0a  = 0xFF;//0XFC;//high
-		  //Robot_D[RobotID].M1b  = 0XE8;//2000//ghalat17325
-		  //Robot_D[RobotID].M1a  = 0X03;
-		  //Robot_D[RobotID].M2b  = 0XE8;//1000//low13703
-		  //Robot_D[RobotID].M2a  = 0X03;//high
-		  //Robot_D[RobotID].M3b  = 0xB8;//3000//32;//ghalat30258
-		  //Robot_D[RobotID].M3a  = 0X0B;//76;
+		 //Robot_D[RobotID].M0b  = 0xD0;//0X18;//-1000//01;//low37121
+		 //Robot_D[RobotID].M0a  = 0x07;//0XFC;//high
+		 //Robot_D[RobotID].M1b  = 0XE8;//2000//ghalat17325
+		 //Robot_D[RobotID].M1a  = 0X03;
+		 //Robot_D[RobotID].M2b  = 0XDC;//1000//low13703
+		 //Robot_D[RobotID].M2a  = 0X05;//high
+		 //Robot_D[RobotID].M3b  = 0xF4;//3000//32;//ghalat30258
+		 //Robot_D[RobotID].M3a  = 0X01;//76;
 		    
 			////SEND TEST DATA TO FT232
 			//char str1[20];
@@ -331,6 +334,7 @@ ISR(TCE1_OVF_vect)//1ms
 		timectrl=0;
 	}
 	wireless_reset++;
+	free_wheel++;
 	//time2sec++;
 	//if (time2sec>=10)
 	//{
@@ -564,11 +568,14 @@ void NRF_init (void)
 void data_transmission (void)
 {
 	//transmitting data to wireless board/////////////////////////////////////////////////
-	Test_Data[0] = adc/12;
+	Test_Data[0] = adc;
 	Test_Data[1] = time_test;
+	Test_Data[7] = adc*0.4761;//battery voltage
 	
-	Buf_Tx_L[0]  = Robot_D[RobotID].M0a;//(Test_Data[0]>> 8) & 0xFF;	//drive test data
-	Buf_Tx_L[1]  = Robot_D[RobotID].M0b;//Test_Data[0] & 0xFF;			//drive test data
+	Buf_Tx_L[0]  = (Test_Data[0]>> 8) & 0xFF;	//drive test data
+	Buf_Tx_L[1]  = Test_Data[0] & 0xFF;			//drive test data
+	//Buf_Tx_L[0]  = Robot_D[RobotID].M0a;//(Test_Data[0]>> 8) & 0xFF;	//drive test data
+	//Buf_Tx_L[1]  = Robot_D[RobotID].M0b;//Test_Data[0] & 0xFF;			//drive test data
 	Buf_Tx_L[2]  = Robot_D[RobotID].M1a;//(Test_Data[1]>> 8) & 0xFF;	//drive test data
 	Buf_Tx_L[3]  = Robot_D[RobotID].M1b;//Test_Data[1] & 0xFF;			//drive test data
 	Buf_Tx_L[4]  = Robot_D[RobotID].M2a;//(Test_Data[2]>> 8) & 0xFF;	//drive test data
@@ -581,9 +588,9 @@ void data_transmission (void)
 	//Buf_Tx_L[11] = Test_Data[5] & 0xFF;			// unused
 	//Buf_Tx_L[12] = (Test_Data[6]>> 8) & 0xFF;	// unused
 	//Buf_Tx_L[13] = Test_Data[6] & 0xFF;			// unused
-	//Buf_Tx_L[14] = (Test_Data[7]>> 8) & 0xFF;	// unused
-	//Buf_Tx_L[15] = Test_Data[7] & 0xFF;			// unused
-	Buf_Tx_L[16] = adc/12;						//battery voltage
+	Buf_Tx_L[14] = (Test_Data[7]>> 8) & 0xFF;	// battery voltage
+	Buf_Tx_L[15] = Test_Data[7] & 0xFF;			// battery voltage
+	Buf_Tx_L[16] = adc/12;						//battery adc
 	
 
 	//LED_Red_PORT.OUTTGL = LED_Red_PIN_bm;
