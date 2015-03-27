@@ -339,6 +339,12 @@ ISR(TCE1_OVF_vect)//1ms
 	}
 	wireless_reset++;
 	free_wheel++;
+	if(wireless_reset>=20)
+	{
+		NRF_init();
+		wireless_reset=0;
+		//LED_Green_PORT.OUTTGL = LED_Green_PIN_bm;
+	}
 	//time2sec++;
 	//if (time2sec>=10)
 	//{
