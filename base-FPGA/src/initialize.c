@@ -66,7 +66,7 @@ void TimerC0_init(void)
     tc_write_period(&TCC0,0x77);//0x01DFF
     tc_set_direction(&TCC0,TC_UP);
     tc_enable_cc_channels(&TCC0,TC_CCCEN);
-    tc_enable_cc_channels(&TCC0,TC_CCDEN);
+   // tc_enable_cc_channels(&TCC0,TC_CCDEN);
     tc_enable(&TCC0);
     tc_write_cc(&TCC0,TC_CCD,0x5D);
 };

@@ -40,13 +40,13 @@ unsigned char Buf_Rx_L[_Buffer_Size] ;
 char Buf_Tx_L[_Buffer_Size];
 char Address[_Address_Width] = { 0x11, 0x22, 0x33, 0x44, 0x55};
 int motor_num=0,test=0;
-uint32_t kck_time,time_test=0;
+uint32_t kck_time,time_test=0,charge_time=0;
 int free_wheel=0;
 int wireless_reset=0;
 int Robot_Select,Robot_Select_Last;
 int Test_Data[8];
 float adc =0;
-int flg=0;
+int flg=0, charge_flg=0;
 
 char ctrlflg=0,full_charge=0;;
 uint64_t flag2sec=0;
@@ -80,8 +80,8 @@ int main (void)
 	  {  
 		    asm("wdr");
 		   // BUZZER
-		    adc = adc +(adc_get_unsigned_result(&ADCA,ADC_CH0)-adc)*0.01;
-		   
+		    //adc = adc +(adc_get_unsigned_result(&ADCA,ADC_CH0)-adc)*0.01;
+		   adc = adc_get_unsigned_result(&ADCA,ADC_CH0);
 		    if (adc<=2250)//10 volt
 		    {
 			    Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
@@ -105,7 +105,7 @@ int main (void)
 					tc_enable_cc_channels(&TCC0,TC_CCDEN);
 				}
 			}
-			if (full_charge)
+			if (charge_flg)//full_charge 
 			{
 				if (Robot_D[RobotID].KCK )
 				{
@@ -351,6 +351,9 @@ ISR(TCE1_OVF_vect)//1ms
 		//flag2sec++;
 		//time2sec=0;
 	//}
+	charge_time++;
+	if(charge_time>=3100)
+	charge_flg=1;
 	if(flg)
 	{    
 		if(kck_time<100)
@@ -366,12 +369,16 @@ ISR(TCE1_OVF_vect)//1ms
 					tc_enable_cc_channels(&TCC0,TC_CCCEN);
 					KCK_Speed_DIR(KCK_SPEED_HI);
 					full_charge=0;
+					charge_flg=0;
+					charge_time=0;
 				}
-				else if(full_charge==1)
+				else if(charge_flg)//full_charge
 				{
 					tc_enable_cc_channels(&TCC0,TC_CCCEN);
 					KCK_Speed_DIR(Robot_D[RobotID].KCK);
 					full_charge=0;
+					charge_flg=0;
+					charge_time=0;
 				}
 			}
 		}
