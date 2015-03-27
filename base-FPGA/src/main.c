@@ -254,8 +254,9 @@ ISR(PORTD_INT0_vect)////////////////////////////////////////PTX   IRQ Interrupt 
 		 //1) read payload through SPI,
 		 NRF24L01_L_Read_RX_Buf(Buf_Rx_L, _Buffer_Size);
 		 free_wheel=0 ;
-		 if(Buf_Rx_L[0] == 'L')//RobotID)
-		 {
+		// if(Buf_Rx_L[0] == 'L')//RobotID)
+		if((Buf_Rx_L[0] == 0x0A && (RobotID < 3 || (RobotID<9 && RobotID>5)))|| (Buf_Rx_L[0] == 0xA0 && (RobotID > 8 || (RobotID<6 && RobotID>2))))
+		{
 			 LED_Red_PORT.OUTTGL = LED_Red_PIN_bm;
 			 Robot_D[RobotID].RID  = Buf_Rx_L[0];
 			 Robot_D[RobotID].M0a  = Buf_Rx_L[1+ RobotID%3 * 10];
@@ -557,9 +558,10 @@ void NRF_init (void)
 	// 	    NRF24L01_L_Init_milad(_TX_MODE, _CH_2, _2Mbps, Address, _Address_Width, _Buffer_Size, RF_PWR_MAX);
 	// 	    else
 	// 	    NRF24L01_L_Init_milad(_TX_MODE, _CH_3, _2Mbps, Address, _Address_Width, _Buffer_Size, RF_PWR_MAX);
-	if (RobotID < 3)
+	if (RobotID < 6)//3
 	NRF24L01_L_Init_milad(_RX_MODE, _CH_1, _2Mbps, Address, _Address_Width, _Buffer_Size, RF_PWR_MAX);
-	else if(RobotID > 2 && RobotID < 6)
+	//else if(RobotID > 2 && RobotID < 6)
+	else if(RobotID > 5)
 	NRF24L01_L_Init_milad(_RX_MODE, _CH_0, _2Mbps, Address, _Address_Width, _Buffer_Size, RF_PWR_MAX);
 	NRF24L01_L_WriteReg(W_REGISTER | DYNPD,0x01);
 	NRF24L01_L_WriteReg(W_REGISTER | FEATURE,0x06);
