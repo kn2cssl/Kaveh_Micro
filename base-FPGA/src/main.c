@@ -40,13 +40,13 @@ unsigned char Buf_Rx_L[_Buffer_Size] ;
 char Buf_Tx_L[_Buffer_Size];
 char Address[_Address_Width] = { 0x11, 0x22, 0x33, 0x44, 0x55};
 int motor_num=0,test=0;
-uint32_t kck_time,time_test=0,charge_time=0,kck_time_sw=0;
+uint32_t kck_time,time_test=0,charge_time=0,kck_time_sw=0,charge_count=0,shoot_alarm_time=0;;
 int free_wheel=0;
 int wireless_reset=0;
 int Robot_Select,Robot_Select_Last;
 int Test_Data[8];
 float adc =0;
-int flg=0, charge_flg=0,flg_sw=0;
+int flg=0, charge_flg=0,flg_sw=0,shoot_alarm_flg=0;
 
 char ctrlflg=0,full_charge=0;;
 uint64_t flag2sec=0;
@@ -83,13 +83,11 @@ int main (void)
 		    //adc = adc +(adc_get_unsigned_result(&ADCA,ADC_CH0)-adc)*0.01;
 		   adc = adc_get_unsigned_result(&ADCA,ADC_CH0);
 		    if (adc<=2250)//10 volt
-		    {
-			    Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
-		    }
+			Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
+		    else if(shoot_alarm_flg && (charge_count>=30000))
+		    Buzzer_PORT.OUTSET = Buzzer_PIN_bm;
 		    else
-		    {
-			    Buzzer_PORT.OUTCLR = Buzzer_PIN_bm;
-		    }
+		    Buzzer_PORT.OUTCLR = Buzzer_PIN_bm;
 			
 			//SHOOT
 			PORTC_OUTCLR=KCK_SH_PIN_bm;
@@ -97,6 +95,7 @@ int main (void)
 			{
 				full_charge=1;
 				tc_disable_cc_channels(&TCC0,TC_CCDEN);
+				charge_count=0;
 			}
 			else
 			{
@@ -337,12 +336,20 @@ ISR(TCE1_OVF_vect)//1ms
 		ctrlflg=1;
 		timectrl=0;
 	}
+	charge_count++;
+	shoot_alarm_time++;
+	if (shoot_alarm_time>=200)
+	{
+		shoot_alarm_flg = ~(shoot_alarm_flg);
+		shoot_alarm_time=0;
+	}
 	wireless_reset++;
 	free_wheel++;
 	if((KCK_Ch_Limit_PORT.IN & KCK_Ch_Limit_PIN_bm)>>KCK_Ch_Limit_PIN_bp)
 	{
 		full_charge=1;
 		tc_disable_cc_channels(&TCC0,TC_CCDEN);
+		charge_count=0;
 	}
 	else
 	{
@@ -640,9 +647,9 @@ void NRF_init (void)
 void data_transmission (void)
 {
 	//transmitting data to wireless board/////////////////////////////////////////////////
-	Test_Data[0] = adc;
+	//Test_Data[0] = adc;
 	Test_Data[1] = time_test;
-	Test_Data[7] = adc*0.4761;//battery voltage
+	Test_Data[0] = adc*0.4761;//battery voltage
 	
 	Buf_Tx_L[0]  = (Test_Data[0]>> 8) & 0xFF;	//drive test data
 	Buf_Tx_L[1]  = Test_Data[0] & 0xFF;			//drive test data
